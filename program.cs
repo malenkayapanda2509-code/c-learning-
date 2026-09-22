@@ -1,8 +1,9 @@
 ﻿using System;
 
-public class Class1
+public class program
 {
-	public Class1()
-	{
-	}
+    static void Main(string[] args)
+    {
+        Console.WriteLine("hello");
+    }
 }
