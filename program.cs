@@ -1,23 +1,42 @@
-﻿namespace StyleErrors
+﻿using System;
+
+class Program
 {
-    class Program
+    static void Main()
     {
-        static int A;
-        static int upperBound;
+        Console.Write("Введите имя студента: ");
+        string name = Console.ReadLine();
 
-        static void Main()
+        Console.Write("Введите первую оценку: ");
+        int grade1 = Convert.ToInt32(Console.ReadLine());
+
+        Console.Write("Введите вторую оценку: ");
+        int grade2 = Convert.ToInt32(Console.ReadLine());
+
+        Console.Write("Введите третью оценку: ");
+        int grade3 = Convert.ToInt32(Console.ReadLine());
+
+        double average = (grade1 + grade2 + grade3) / 3.0;
+
+        Console.WriteLine();
+        Console.WriteLine($"Студент: {name}");
+        Console.WriteLine($"Средний балл: {average:F2}");
+
+        if (average >= 4.5)
         {
-            upperBound = 100;
-            Do();
+            Console.WriteLine("Результат: отлично!");
         }
-
-        static void Do()
+        else if (average >= 3.5)
         {
-            A = 0;
-            for (int theNumberToSquareAndSum = 0; theNumberToSquareAndSum < upperBound; theNumberToSquareAndSum++)
-                A = A + theNumberToSquareAndSum * theNumberToSquareAndSum;
-            Console.WriteLine("Sum = " + A.ToString());
-            return;
+            Console.WriteLine("Результат: хорошо.");
+        }
+        else if (average >= 3)
+        {
+            Console.WriteLine("Результат: удовлетворительно.");
+        }
+        else
+        {
+            Console.WriteLine("Результат: нужно подтянуть учебу.");
         }
     }
 }
