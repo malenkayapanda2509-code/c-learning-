@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 class Program
 {
@@ -6,6 +6,12 @@ class Program
     {
         Console.Write("Введите имя студента: ");
         string name = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            Console.WriteLine("Имя не может быть пустым.");
+            return;
+        }
 
         Console.Write("Введите первую оценку: ");
         int grade1 = Convert.ToInt32(Console.ReadLine());
