@@ -1,60 +1,92 @@
-```csharp
 using System;
 
 class Program
 {
     static void Main()
     {
-        Console.Title = "Student Helper";
+        Console.Title = "Student Helper 2.0";
 
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("╔════════════════════════════════════╗");
-        Console.WriteLine("║        🎓 STUDENT HELPER 🎓        ║");
-        Console.WriteLine("║       Твой маленький помощник      ║");
-        Console.WriteLine("╚════════════════════════════════════╝");
-        Console.ResetColor();
+        ShowHeader();
 
-        Console.Write("\nВведите имя студента: ");
-        string name = Console.ReadLine();
+        Console.Write("Введите имя студента: ");
+        var name = Console.ReadLine();
 
         if (string.IsNullOrWhiteSpace(name))
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Имя не может быть пустым!");
-            Console.ResetColor();
+            ShowError("Имя не может быть пустым!");
             return;
         }
 
-        Console.WriteLine($"\nПривет, {name}! Давай посчитаем твой средний балл.");
+        Console.WriteLine($"\nПривет, {name}! 👋");
+        Console.WriteLine("Давай проверим твою успеваемость.\n");
 
-        Console.Write("\nВведите оценку 1 (1-5): ");
-        int grade1 = Convert.ToInt32(Console.ReadLine());
+        var grade1 = ReadGrade(1);
+        var grade2 = ReadGrade(2);
+        var grade3 = ReadGrade(3);
+        var grade4 = ReadGrade(4);
+        var grade5 = ReadGrade(5);
 
-        Console.Write("Введите оценку 2 (1-5): ");
-        int grade2 = Convert.ToInt32(Console.ReadLine());
+        var average = (grade1 + grade2 + grade3 + grade4 + grade5) / 5.0;
+        var maxGrade = Math.Max(Math.Max(Math.Max(grade1, grade2), Math.Max(grade3, grade4)), grade5);
+        var minGrade = Math.Min(Math.Min(Math.Min(grade1, grade2), Math.Min(grade3, grade4)), grade5);
 
-        Console.Write("Введите оценку 3 (1-5): ");
-        int grade3 = Convert.ToInt32(Console.ReadLine());
+        ShowResults(name, grade1, grade2, grade3, grade4, grade5,
+            average, maxGrade, minGrade);
 
-        if (grade1 < 1 || grade1 > 5 ||
-            grade2 < 1 || grade2 > 5 ||
-            grade3 < 1 || grade3 > 5)
+        Console.WriteLine("\nНажмите любую клавишу для выхода...");
+        Console.ReadKey();
+    }
+
+    static void ShowHeader()
+    {
+        Console.ForegroundColor = ConsoleColor.Cyan;
+
+        Console.WriteLine("╔══════════════════════════════════════╗");
+        Console.WriteLine("║       🎓 STUDENT HELPER 2.0 🎓      ║");
+        Console.WriteLine("║        Твой помощник в учёбе         ║");
+        Console.WriteLine("╚══════════════════════════════════════╝");
+
+        Console.ResetColor();
+    }
+
+    static int ReadGrade(int number)
+    {
+        while (true)
         {
+            Console.Write($"Введите оценку {number} (1-5): ");
+            var input = Console.ReadLine();
+
+            if (int.TryParse(input, out var grade) && grade >= 1 && grade <= 5)
+            {
+                return grade;
+            }
+
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("\nОшибка! Оценки должны быть от 1 до 5.");
+            Console.WriteLine("Ошибка! Введите целое число от 1 до 5.");
             Console.ResetColor();
-            return;
         }
+    }
 
-        double average = (grade1 + grade2 + grade3) / 3.0;
+    static void ShowResults(
+        string name,
+        int grade1,
+        int grade2,
+        int grade3,
+        int grade4,
+        int grade5,
+        double average,
+        int maxGrade,
+        int minGrade)
+    {
+        Console.WriteLine("\n╔══════════════════════════════════════╗");
+        Console.WriteLine("║              РЕЗУЛЬТАТЫ              ║");
+        Console.WriteLine("╚══════════════════════════════════════╝");
 
-        Console.WriteLine("\n╔════════════════════════════════════╗");
-        Console.WriteLine("║            РЕЗУЛЬТАТЫ             ║");
-        Console.WriteLine("╚════════════════════════════════════╝");
-
-        Console.WriteLine($"Студент:      {name}");
-        Console.WriteLine($"Оценки:       {grade1}, {grade2}, {grade3}");
-        Console.WriteLine($"Средний балл: {average:F2}");
+        Console.WriteLine($"Студент:        {name}");
+        Console.WriteLine($"Оценки:         {grade1}, {grade2}, {grade3}, {grade4}, {grade5}");
+        Console.WriteLine($"Средний балл:   {average:F2}");
+        Console.WriteLine($"Лучшая оценка:  {maxGrade}");
+        Console.WriteLine($"Минимальная:    {minGrade}");
 
         Console.Write("\nУспеваемость: ");
 
@@ -62,44 +94,51 @@ class Program
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("ОТЛИЧНО! 🌟");
-            Console.WriteLine("Так держать!");
+            Console.WriteLine("Очень высокий результат!");
         }
         else if (average >= 3.5)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("ХОРОШО 👍");
-            Console.WriteLine("Есть куда расти!");
+            Console.WriteLine("Результат хороший, но можно ещё лучше!");
         }
         else if (average >= 3)
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("НОРМАЛЬНО 🙂");
-            Console.WriteLine("Можно немного постараться.");
+            Console.WriteLine("Есть темы, которые стоит повторить.");
         }
         else
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("НУЖНО ПОДТЯНУТЬСЯ 📚");
-            Console.WriteLine("Не сдавайся!");
+            Console.WriteLine("Не переживай — всё можно исправить!");
         }
 
         Console.ResetColor();
 
-        Console.WriteLine("\n------------------------------------");
+        Console.WriteLine("\n--------------------------------------");
 
         if (average == 5)
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine("🏆 Идеальный результат!");
+            Console.WriteLine("🏆 ИДЕАЛЬНЫЙ РЕЗУЛЬТАТ!");
             Console.ResetColor();
+        }
+        else if (minGrade == 1)
+        {
+            Console.WriteLine("💡 Совет: обрати внимание на предмет с самой низкой оценкой.");
         }
         else
         {
-            Console.WriteLine("💡 Совет: продолжай учиться и всё получится!");
+            Console.WriteLine("💡 Совет: продолжай заниматься и результат станет ещё лучше!");
         }
+    }
 
-        Console.WriteLine("\nНажмите любую клавишу для выхода...");
-        Console.ReadKey();
+    static void ShowError(string message)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"\nОшибка: {message}");
+        Console.ResetColor();
     }
 }
-```
