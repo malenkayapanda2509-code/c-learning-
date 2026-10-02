@@ -19,14 +19,14 @@ public class Student
 
     public double GetAverage()
     {
-        var allGrades = GetAllGrades();
+        var grades = GetAllGrades();
 
-        if (allGrades.Count == 0)
+        if (grades.Count == 0)
         {
             return 0;
         }
 
-        return allGrades.Average();
+        return grades.Average();
     }
 
     public List<int> GetAllGrades()
@@ -44,6 +44,26 @@ public class Student
     public int GetTotalGrades()
     {
         return GetAllGrades().Count;
+    }
+
+    public int GetExcellentGrades()
+    {
+        return GetAllGrades().Count(grade => grade == 5);
+    }
+
+    public int GetGoodGrades()
+    {
+        return GetAllGrades().Count(grade => grade == 4);
+    }
+
+    public int GetAverageGrades()
+    {
+        return GetAllGrades().Count(grade => grade == 3);
+    }
+
+    public int GetBadGrades()
+    {
+        return GetAllGrades().Count(grade => grade <= 2);
     }
 
     public Subject GetBestSubject()
@@ -70,24 +90,9 @@ public class Student
             .First();
     }
 
-    public int GetExcellentGrades()
+    public bool HasReachedTarget()
     {
-        return GetAllGrades().Count(grade => grade == 5);
-    }
-
-    public int GetGoodGrades()
-    {
-        return GetAllGrades().Count(grade => grade == 4);
-    }
-
-    public int GetAverageGrades()
-    {
-        return GetAllGrades().Count(grade => grade == 3);
-    }
-
-    public int GetBadGrades()
-    {
-        return GetAllGrades().Count(grade => grade <= 2);
+        return GetAverage() >= TargetAverage;
     }
 
     public string GetLevel()
@@ -122,8 +127,36 @@ public class Student
         return "💪 Нужен дополнительный фокус";
     }
 
-    public bool HasReachedTarget()
+    public int GetAchievementCount()
     {
-        return GetAverage() >= TargetAverage;
+        var count = 0;
+
+        if (GetTotalGrades() >= 1)
+        {
+            count++;
+        }
+
+        if (GetTotalGrades() >= 5)
+        {
+            count++;
+        }
+
+        if (GetAverage() >= 4.5)
+        {
+            count++;
+        }
+
+        if (Subjects.Count >= 3)
+        {
+            count++;
+        }
+
+        if (GetTotalGrades() > 0 &&
+            GetAllGrades().All(grade => grade >= 4))
+        {
+            count++;
+        }
+
+        return count;
     }
 }
