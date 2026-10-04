@@ -1,44 +1,33 @@
 using System;
 
-public class TaskItem
+public class ScheduleItem
 {
-    public string Title { get; set; }
+    public string Day { get; set; }
 
-    public bool IsCompleted { get; set; }
+    public string Time { get; set; }
 
-    public DateTime Deadline { get; set; }
+    public string Subject { get; set; }
 
-    public TaskItem(string title, DateTime deadline)
+    public string Teacher { get; set; }
+
+    public string Room { get; set; }
+
+    public ScheduleItem(
+        string day,
+        string time,
+        string subject,
+        string teacher,
+        string room)
     {
-        Title = title;
-        Deadline = deadline;
-        IsCompleted = false;
+        Day = day;
+        Time = time;
+        Subject = subject;
+        Teacher = teacher;
+        Room = room;
     }
 
-    public string GetStatus()
+    public string GetInfo()
     {
-        if (IsCompleted)
-        {
-            return "✅ Выполнено";
-        }
-
-        var daysLeft = (Deadline.Date - DateTime.Today).Days;
-
-        if (daysLeft < 0)
-        {
-            return "🔴 Просрочено";
-        }
-
-        if (daysLeft == 0)
-        {
-            return "🔴 Сегодня";
-        }
-
-        if (daysLeft <= 3)
-        {
-            return $"🟠 Через {daysLeft} дн.";
-        }
-
-        return $"🟢 Через {daysLeft} дн.";
+        return $"{Time} — {Subject} — {Room}";
     }
 }
