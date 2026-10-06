@@ -2,92 +2,129 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public static class StatisticsService
+public class Student
 {
-    public static double GetAverage(Student student)
+    public string Name { get; set; }
+    public double TargetAverage { get; set; }
+    public List<Subject> Subjects { get; set; }
+    public List<int> GradeHistory { get; set; }
+    public List<ScheduleItem> Schedule { get; set; }
+    public int XP { get; set; }
+
+    public Student()
     {
-        var grades = student.GetAllGrades();
+        Name = "";
+        TargetAverage = 4.5;
+        Subjects = new List<Subject>();
+        GradeHistory = new List<int>();
+        Schedule = new List<ScheduleItem>();
+        XP = 0;
+    }
+
+    public Student(string name)
+    {
+        Name = name;
+        TargetAverage = 4.5;
+        Subjects = new List<Subject>();
+        GradeHistory = new List<int>();
+        Schedule = new List<ScheduleItem>();
+        XP = 0;
+    }
+
+    public List<int> GetAllGrades()
+    {
+        var grades = new List<int>();
+
+        foreach (var subject in Subjects)
+            grades.AddRange(subject.Grades);
+
+        return grades;
+    }
+
+    public double GetAverage()
+    {
+        var grades = GetAllGrades();
 
         if (grades.Count == 0)
-        {
             return 0;
-        }
 
         return grades.Average();
     }
 
-    public static double GetFivePercentage(Student student)
+    public int GetTotalGrades()
     {
-        var grades = student.GetAllGrades();
-
-        if (grades.Count == 0)
-        {
-            return 0;
-        }
-
-        var fives = grades.Count(grade => grade == 5);
-
-        return fives * 100.0 / grades.Count;
+        return GetAllGrades().Count;
     }
 
-    public static double GetFourPercentage(Student student)
+    public int GetExcellentGrades()
     {
-        var grades = student.GetAllGrades();
-
-        if (grades.Count == 0)
-        {
-            return 0;
-        }
-
-        var fours = grades.Count(grade => grade == 4);
-
-        return fours * 100.0 / grades.Count;
+        return GetAllGrades().Count(x => x == 5);
     }
 
-    public static Subject GetBestSubject(Student student)
+    public int GetGoodGrades()
     {
-        if (student.Subjects.Count == 0)
-        {
+        return GetAllGrades().Count(x => x == 4);
+    }
+
+    public int GetAverageGrades()
+    {
+        return GetAllGrades().Count(x => x == 3);
+    }
+
+    public int GetBadGrades()
+    {
+        return GetAllGrades().Count(x => x <= 2);
+    }
+
+    public Subject GetBestSubject()
+    {
+        if (Subjects.Count == 0)
             return null;
-        }
 
-        return student.Subjects
-            .OrderByDescending(
-                subject => subject.GetAverage())
-            .First();
+        return Subjects
+            .Where(x => x.Grades.Count > 0)
+            .OrderByDescending(x => x.GetAverage())
+            .FirstOrDefault();
     }
 
-    public static Subject GetWeakestSubject(Student student)
+    public Subject GetWeakestSubject()
     {
-        if (student.Subjects.Count == 0)
-        {
+        if (Subjects.Count == 0)
             return null;
-        }
 
-        return student.Subjects
-            .OrderBy(
-                subject => subject.GetAverage())
-            .First();
+        return Subjects
+            .Where(x => x.Grades.Count > 0)
+            .OrderBy(x => x.GetAverage())
+            .FirstOrDefault();
     }
 
-    public static void ShowChart(Student student)
+    public bool HasReachedTarget()
     {
-        Console.WriteLine("📊 УСПЕВАЕМОСТЬ");
-        Console.WriteLine();
+        return GetAverage() >= TargetAverage;
+    }
 
-        foreach (var subject in student.Subjects)
-        {
-            var average = subject.GetAverage();
+    public int GetTotalTasks()
+    {
+        return Subjects.Sum(x => x.GetTotalTasks());
+    }
 
-            var blocks = (int)Math.Round(average * 2);
+    public int GetCompletedTasks()
+    {
+        return Subjects.Sum(x => x.GetCompletedTasks());
+    }
 
-            var filled = new string('█', blocks);
-            var empty = new string('░', 10 - blocks);
+    public void AddXP(int amount)
+    {
+        XP += amount;
+    }
 
-            Console.WriteLine(
-                $"{subject.Name,-20} " +
-                $"{filled}{empty} " +
-                $"{average:F2}");
-        }
+    public int GetLevel()
+    {
+        return XP / 100 + 1;
+    }
+
+    public int GetLevelProgress()
+    {
+        return XP % 100;
     }
 }
