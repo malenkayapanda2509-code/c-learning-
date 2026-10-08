@@ -1,129 +1,81 @@
-using System.Collections.Generic;
-using System.Linq;
+using System;
 
-public class Student
+public class TaskItem
 {
-    public string Name { get; set; }
-    public double TargetAverage { get; set; }
-    public List<Subject> Subjects { get; set; }
-    public List<int> GradeHistory { get; set; }
-    public List<ScheduleItem> Schedule { get; set; }
-    public int XP { get; set; }
+    public string Title { get; set; }
+    public bool IsCompleted { get; set; }
+    public DateTime Deadline { get; set; }
+    public int Priority { get; set; }
 
-    public Student()
+    public TaskItem()
     {
-        Name = "";
-        TargetAverage = 4.5;
-        Subjects = new List<Subject>();
-        GradeHistory = new List<int>();
-        Schedule = new List<ScheduleItem>();
-        XP = 0;
+        Title = "";
+        IsCompleted = false;
+        Deadline = DateTime.Today;
+        Priority = 2;
     }
 
-    public Student(string name)
+    public TaskItem(string title, DateTime deadline, int priority)
     {
-        Name = name;
-        TargetAverage = 4.5;
-        Subjects = new List<Subject>();
-        GradeHistory = new List<int>();
-        Schedule = new List<ScheduleItem>();
-        XP = 0;
+        Title = title;
+        Deadline = deadline;
+        Priority = priority;
+        IsCompleted = false;
     }
 
-    public List<int> GetAllGrades()
+    public string GetPriorityName()
     {
-        var grades = new List<int>();
+        if (Priority == 1)
+            return "🔴 Высокий";
 
-        foreach (var subject in Subjects)
-            grades.AddRange(subject.Grades);
+        if (Priority == 2)
+            return "🟡 Средний";
 
-        return grades;
+        return "🟢 Низкий";
     }
 
-    public double GetAverage()
+    public string GetStatus()
     {
-        var grades = GetAllGrades();
+        if (IsCompleted)
+            return "✅ Выполнено";
 
-        if (grades.Count == 0)
-            return 0;
+        var daysLeft =
+            (Deadline.Date - DateTime.Today).Days;
 
-        return grades.Average();
+        if (daysLeft < 0)
+            return $"🔴 Просрочено на {Math.Abs(daysLeft)} дн.";
+
+        if (daysLeft == 0)
+            return "🟠 Сегодня";
+
+        if (daysLeft == 1)
+            return "🟠 Завтра";
+
+        if (daysLeft <= 7)
+            return $"🟡 Через {daysLeft} дн.";
+
+        return $"🟢 Через {daysLeft} дн.";
     }
 
-    public int GetTotalGrades()
+    public bool IsOverdue()
     {
-        return GetAllGrades().Count;
+        return !IsCompleted &&
+               Deadline.Date < DateTime.Today;
     }
 
-    public int GetExcellentGrades()
+    public bool IsToday()
     {
-        return GetAllGrades().Count(x => x == 5);
+        return !IsCompleted &&
+               Deadline.Date == DateTime.Today;
     }
 
-    public int GetGoodGrades()
+    public bool IsForNextWeek()
     {
-        return GetAllGrades().Count(x => x == 4);
-    }
+        var days =
+            (Deadline.Date - DateTime.Today).Days;
 
-    public int GetAverageGrades()
-    {
-        return GetAllGrades().Count(x => x == 3);
-    }
-
-    public int GetBadGrades()
-    {
-        return GetAllGrades().Count(x => x <= 2);
-    }
-
-    public Subject GetBestSubject()
-    {
-        if (Subjects.Count == 0)
-            return null;
-
-        return Subjects
-            .Where(x => x.Grades.Count > 0)
-            .OrderByDescending(x => x.GetAverage())
-            .FirstOrDefault();
-    }
-
-    public Subject GetWeakestSubject()
-    {
-        if (Subjects.Count == 0)
-            return null;
-
-        return Subjects
-            .Where(x => x.Grades.Count > 0)
-            .OrderBy(x => x.GetAverage())
-            .FirstOrDefault();
-    }
-
-    public bool HasReachedTarget()
-    {
-        return GetAverage() >= TargetAverage;
-    }
-
-    public int GetTotalTasks()
-    {
-        return Subjects.Sum(x => x.GetTotalTasks());
-    }
-
-    public int GetCompletedTasks()
-    {
-        return Subjects.Sum(x => x.GetCompletedTasks());
-    }
-
-    public void AddXP(int amount)
-    {
-        XP += amount;
-    }
-
-    public int GetLevel()
-    {
-        return XP / 100 + 1;
-    }
-
-    public int GetLevelProgress()
-    {
-        return XP % 100;
+        return !IsCompleted &&
+               days >= 1 &&
+               days <= 7;
     }
 }
