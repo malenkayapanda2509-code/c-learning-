@@ -9,7 +9,7 @@ public class TaskItem
 
     public TaskItem()
     {
-        Title = "00";
+        Title = "";
         IsCompleted = false;
         Deadline = DateTime.Today;
         Priority = 2;
